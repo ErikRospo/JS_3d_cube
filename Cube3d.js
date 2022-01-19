@@ -1,67 +1,150 @@
 // constants
+
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const SHAPE = parseInt(urlParams.get("shape"));
+const SPEEDSETTER = parseInt(urlParams.get("speed"));
+const sizeFactor = parseInt(urlParams.get("size"));
+const random = Math.random;
 const COLOR_BG = "black";
 const COLOR_CUBE = "yellow";
-const SPEED_X = 0.05; //rps
-const SPEED_Y = 0.1; //rps
-const SPEED_Z = 0.15; //rps
-class POINT3D {
-  constructor(x, y, z) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-  }
+switch (SPEEDSETTER) {
+  case 1:
+    var SPEED_X = random(); // rps
+    var SPEED_Y = random(); // rps
+    var SPEED_Z = random(); // rps
+    break;
+  case 2:
+    var SPEED_X = 0.05; // rps
+    var SPEED_Y = 0.1; // rps
+    var SPEED_Z = 0.15; // rps
+    break;
+  default:
+    var SPEED_X = 0.1; // rps
+    var SPEED_Y = 0.1; // rps
+    var SPEED_Z = 0.1; // rps
+    break;
 }
-// canvas and context setup
-var canvas = document.getElementById("cnv");
+const POINT3D = function (x, y, z) {
+  this.x = x;
+  this.y = y;
+  this.z = z;
+};
+
+// set up the canvas and context
+var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 
-//get document dimensions
+// dimensions
 var h = document.documentElement.clientHeight;
 var w = document.documentElement.clientWidth;
 canvas.height = h;
 canvas.width = w;
 
-//colors and lines
+// colours and lines
 ctx.fillStyle = COLOR_BG;
 ctx.strokeStyle = COLOR_CUBE;
 ctx.lineWidth = w / 100;
 ctx.lineCap = "round";
 
-//cube parameters
+// cube parameters
 var cx = w / 2;
 var cy = h / 2;
 var cz = 0;
-var size = h / 4;
-var vertices = [
-  new POINT3D(cx - size, cy - size, cz - size),
-  new POINT3D(cx + size, cy - size, cz - size),
-  new POINT3D(cx + size, cy + size, cz - size),
-  new POINT3D(cx - size, cy + size, cz - size),
-  new POINT3D(cx - size, cy - size, cz - size),
-  new POINT3D(cx + size, cy - size, cz + size),
-  new POINT3D(cx + size, cy + size, cz + size),
-  new POINT3D(cx - size, cy + size, cz + size),
-];
+var size = (h * sizeFactor) / 4;
+if (SHAPE == 1) {
+  var vertices = [
+    new POINT3D(cx - size, cy - size, cz - size),
+    new POINT3D(cx + size, cy - size, cz - size),
+    new POINT3D(cx + size, cy + size, cz - size),
+    new POINT3D(cx - size, cy + size, cz - size),
+    new POINT3D(cx - size, cy - size, cz + size),
+    new POINT3D(cx + size, cy - size, cz + size),
+    new POINT3D(cx + size, cy + size, cz + size),
+    new POINT3D(cx - size, cy + size, cz + size),
+  ];
+} else if (SHAPE == 2) {
+  var vertices = [
+    new POINT3D(
+      cx - random() * size,
+      cy - random() * size,
+      cz - random() * size
+    ),
+    new POINT3D(
+      cx + random() * size,
+      cy - random() * size,
+      cz - random() * size
+    ),
+    new POINT3D(
+      cx + random() * size,
+      cy + random() * size,
+      cz - random() * size
+    ),
+    new POINT3D(
+      cx - random() * size,
+      cy + random() * size,
+      cz - random() * size
+    ),
+    new POINT3D(
+      cx - random() * size,
+      cy - random() * size,
+      cz + random() * size
+    ),
+    new POINT3D(
+      cx + random() * size,
+      cy - random() * size,
+      cz + random() * size
+    ),
+    new POINT3D(
+      cx + random() * size,
+      cy + random() * size,
+      cz + random() * size
+    ),
+    new POINT3D(
+      cx - random() * size,
+      cy + random() * size,
+      cz + random() * size
+    ),
+  ];
+}
 var edges = [
   [0, 1],
   [1, 2],
   [2, 3],
-  [3, 0], //back face
+  [3, 0], // back face
   [4, 5],
   [5, 6],
   [6, 7],
-  [7, 4], //front face
+  [7, 4], // front face
   [0, 4],
   [1, 5],
   [2, 6],
-  [3, 7], //connecting sides
+  [3, 7], // connecting sides
 ];
-//set up animation loop
+
+// set up the animation loop
 var timeDelta,
   timeLast = 0;
+ctx.fillRect(0, 0, w, h);
+var colors = [];
+for (let index = 0; index < edges.length; index++) {
+  var redComponent = Math.round(255 * random());
+  var greenComponent = Math.round(255 * random());
+  var blueComponent = Math.round(255 * random());
+  colors.push(`rgb(${redComponent},${greenComponent},${blueComponent})`);
+}
 requestAnimationFrame(loop);
-function update_angles() {
-  let angle = timeDelta * cubeSpeed * SPEED_Z * Math.PI * 2;
+
+function loop(timeNow) {
+  // calculate the time difference
+  timeDelta = timeNow - timeLast;
+  timeLast = timeNow;
+
+  // background
+  //ctx.fillRect(0, 0, w, h);
+
+  // rotate the cube along the z axis
+  let angle = timeDelta * 0.001 * SPEED_Z * Math.PI * 2;
   for (let v of vertices) {
     let dx = v.x - cx;
     let dy = v.y - cy;
@@ -70,38 +153,39 @@ function update_angles() {
     v.x = x + cx;
     v.y = y + cy;
   }
-  angle = timeDelta * cubeSpeed * SPEED_X * Math.PI * 2;
+
+  // rotate the cube along the x axis
+  angle = timeDelta * 0.001 * SPEED_X * Math.PI * 2;
   for (let v of vertices) {
-    let dz = v.z - cz;
     let dy = v.y - cy;
-    let z = dz * Math.cos(angle) - dy * Math.sin(angle);
-    let y = dz * Math.sin(angle) + dy * Math.cos(angle);
-    v.z = z + cz;
+    let dz = v.z - cz;
+    let y = dy * Math.cos(angle) - dz * Math.sin(angle);
+    let z = dy * Math.sin(angle) + dz * Math.cos(angle);
     v.y = y + cy;
+    v.z = z + cz;
   }
-  angle = timeDelta * cubeSpeed * SPEED_Y * Math.PI * 2;
+
+  // rotate the cube along the y axis
+  angle = timeDelta * 0.001 * SPEED_Y * Math.PI * 2;
   for (let v of vertices) {
     let dx = v.x - cx;
     let dz = v.z - cz;
-    let x = dx * Math.cos(angle) - dz * Math.sin(angle);
-    let z = dx * Math.sin(angle) + dz * Math.cos(angle);
+    let x = dz * Math.sin(angle) + dx * Math.cos(angle);
+    let z = dz * Math.cos(angle) - dx * Math.sin(angle);
     v.x = x + cx;
     v.z = z + cz;
   }
-}
-function loop(timeNow) {
-  timeDelta = timeNow - timeLast;
-  timeLast = timeNow;
-  //Background
-  ctx.fillRect(0, 0, w, h);
-  update_angles();
+
   // draw each edge
-  for (let edge of edges) {
+  for (let ind = 0; ind < edges.length; ind++) {
+    var edge = edges[ind];
+    ctx.strokeStyle = colors[ind];
     ctx.beginPath();
-    ctx.moveTo(vertices[edge[0]].x, vertices[edges[0]].y);
-    ctx.moveTo(vertices[edge[1]].x, vertices[edges[1]].y);
+    ctx.moveTo(vertices[edge[0]].x, vertices[edge[0]].y);
+    ctx.lineTo(vertices[edge[1]].x, vertices[edge[1]].y);
     ctx.stroke();
   }
-  //call next frame
+
+  // call the next frame
   requestAnimationFrame(loop);
 }
