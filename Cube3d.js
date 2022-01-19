@@ -1,37 +1,35 @@
-// constants
-
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
+let SHAPE = 1;
+let SPEEDSETTER = 2;
+let sizeFactor = 1;
+let overlay = 0;
+let dots = 0;
+let UseColor = 1;
 if (urlParams.has("shape")) {
-  const SHAPE = parseInt(urlParams.get("shape"));
-} else {
-  const SHAPE = 1;
+  SHAPE = parseInt(urlParams.get("shape"), 10);
 }
 if (urlParams.has("speed")) {
-  const SPEEDSETTER = parseInt(urlParams.get("speed"));
-} else {
-  const SPEEDSETTER = 2;
+  SPEEDSETTER = parseInt(urlParams.get("speed"), 10);
 }
 if (urlParams.has("size")) {
-  const sizeFactor = parseInt(urlParams.get("size"));
-} else {
-  const sizeFactor = 1;
+  sizeFactor = parseInt(urlParams.get("size"), 10);
 }
 if (urlParams.has("overlay")) {
-  const overlay = parseInt(urlParams.get("overlay"));
-} else {
-  const overlay = 0;
+  overlay = parseInt(urlParams.get("overlay"), 10);
 }
 if (urlParams.has("dots")) {
-  const dots = parseInt(urlParams.get("dots"));
-} else {
-  const dots = 1;
+  dots = parseInt(urlParams.get("dots"), 10);
 }
 if (urlParams.has("color")) {
-  const UseColor = parseInt(urlParams.get("color"));
-} else {
-  const UseColor = 1;
+  UseColor = parseInt(urlParams.get("color"), 10);
 }
+console.log(sizeFactor);
+console.log(SPEEDSETTER);
+console.log(SHAPE);
+console.log(overlay);
+console.log(dots);
+console.log(UseColor);
 const random = Math.random;
 const COLOR_BG = "black";
 const COLOR_CUBE = "yellow";
@@ -47,9 +45,9 @@ switch (SPEEDSETTER) {
     var SPEED_Z = 0.15; // rps
     break;
   default:
-    var SPEED_X = 0.1 * SPEEDSETTER; // rps
-    var SPEED_Y = 0.1 * SPEEDSETTER; // rps
-    var SPEED_Z = 0.1 * SPEEDSETTER; // rps
+    var SPEED_X = 0.1; // rps
+    var SPEED_Y = 0.1; // rps
+    var SPEED_Z = 0.1; // rps
     break;
 }
 const POINT3D = function (x, y, z) {
