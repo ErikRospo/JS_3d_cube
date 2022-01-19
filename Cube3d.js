@@ -2,11 +2,36 @@
 
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
-const SHAPE = parseInt(urlParams.get("shape"));
-const SPEEDSETTER = parseInt(urlParams.get("speed"));
-const sizeFactor = parseInt(urlParams.get("size"));
-const overlay = parseInt(urlParams.get("overlay"));
-const dots = parseInt(urlParams.get("dots"));
+if (urlParams.has("shape")) {
+  const SHAPE = parseInt(urlParams.get("shape"));
+} else {
+  const SHAPE = 1;
+}
+if (urlParams.has("speed")) {
+  const SPEEDSETTER = parseInt(urlParams.get("speed"));
+} else {
+  const SPEEDSETTER = 2;
+}
+if (urlParams.has("size")) {
+  const sizeFactor = parseInt(urlParams.get("size"));
+} else {
+  const sizeFactor = 1;
+}
+if (urlParams.has("overlay")) {
+  const overlay = parseInt(urlParams.get("overlay"));
+} else {
+  const overlay = 0;
+}
+if (urlParams.has("dots")) {
+  const dots = parseInt(urlParams.get("dots"));
+} else {
+  const dots = 1;
+}
+if (urlParams.has("color")) {
+  const UseColor = parseInt(urlParams.get("color"));
+} else {
+  const UseColor = 1;
+}
 const random = Math.random;
 const COLOR_BG = "black";
 const COLOR_CUBE = "yellow";
@@ -22,9 +47,9 @@ switch (SPEEDSETTER) {
     var SPEED_Z = 0.15; // rps
     break;
   default:
-    var SPEED_X = 0.1; // rps
-    var SPEED_Y = 0.1; // rps
-    var SPEED_Z = 0.1; // rps
+    var SPEED_X = 0.1 * SPEEDSETTER; // rps
+    var SPEED_Y = 0.1 * SPEEDSETTER; // rps
+    var SPEED_Z = 0.1 * SPEEDSETTER; // rps
     break;
 }
 const POINT3D = function (x, y, z) {
@@ -182,7 +207,9 @@ function loop(timeNow) {
   // draw each edge
   for (let ind = 0; ind < edges.length; ind++) {
     var edge = edges[ind];
-    ctx.strokeStyle = colors[ind];
+    if (UseColor == 1) {
+      ctx.strokeStyle = colors[ind];
+    }
     ctx.beginPath();
     if (dots == 0) {
       ctx.moveTo(vertices[edge[0]].x, vertices[edge[0]].y);
