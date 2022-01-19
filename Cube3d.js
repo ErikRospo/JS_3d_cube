@@ -5,6 +5,8 @@ const urlParams = new URLSearchParams(queryString);
 const SHAPE = parseInt(urlParams.get("shape"));
 const SPEEDSETTER = parseInt(urlParams.get("speed"));
 const sizeFactor = parseInt(urlParams.get("size"));
+const overlay = parseInt(urlParams.get("overlay"));
+const dots = parseInt(urlParams.get("dots"));
 const random = Math.random;
 const COLOR_BG = "black";
 const COLOR_CUBE = "yellow";
@@ -141,8 +143,9 @@ function loop(timeNow) {
   timeLast = timeNow;
 
   // background
-  //ctx.fillRect(0, 0, w, h);
-
+  if (overlay == 0) {
+    ctx.fillRect(0, 0, w, h);
+  }
   // rotate the cube along the z axis
   let angle = timeDelta * 0.001 * SPEED_Z * Math.PI * 2;
   for (let v of vertices) {
@@ -181,8 +184,13 @@ function loop(timeNow) {
     var edge = edges[ind];
     ctx.strokeStyle = colors[ind];
     ctx.beginPath();
-    ctx.moveTo(vertices[edge[0]].x, vertices[edge[0]].y);
-    ctx.lineTo(vertices[edge[1]].x, vertices[edge[1]].y);
+    if (dots == 0) {
+      ctx.moveTo(vertices[edge[0]].x, vertices[edge[0]].y);
+      ctx.lineTo(vertices[edge[1]].x, vertices[edge[1]].y);
+    } else {
+      ctx.moveTo(vertices[edge[0]].x, vertices[edge[0]].y);
+      ctx.lineTo(vertices[edge[0]].x, vertices[edge[0]].y);
+    }
     ctx.stroke();
   }
 
