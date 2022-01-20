@@ -133,17 +133,6 @@ if (SHAPE == 1) {
       cz + random() * size
     ),
   ];
-} else if (SHAPE == 3) {
-  var vertices = [];
-  for (let n = 0; n < 1000; n++) {
-    vertices.push(
-      new POINT3D(
-        Math.sin(phi) * Math.cos(theta),
-        Math.sin(phi) * Math.sin(theta),
-        Math.cos(phi)
-      )
-    );
-  }
 }
 if (SHAPE == 2 || SHAPE == 1) {
   var edges = [
@@ -160,11 +149,6 @@ if (SHAPE == 2 || SHAPE == 1) {
     [2, 6],
     [3, 7], // connecting sides
   ];
-} else if (SHAPE == 3) {
-  var edges = [];
-  for (let m = 1; m < 360; m++) {
-    edges.push([m - 1, m]);
-  }
 }
 // set up the animation loop
 var timeDelta,
