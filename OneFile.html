@@ -31,7 +31,7 @@
         SPEEDSETTER = parseInt(urlParams.get("speed"), 10);
       }
       if (urlParams.has("size")) {
-        sizeFactor = parseInt(urlParams.get("size"), 10);
+        sizeFactor = parseFloat(urlParams.get("size"), 10);
       }
       if (urlParams.has("overlay")) {
         overlay = parseInt(urlParams.get("overlay"), 10);
