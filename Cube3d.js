@@ -1,4 +1,4 @@
-const degtorad = 360 / Math.PI;
+const degtorad = 180 / Math.PI;
 const radtodeg = 1 / degtorad;
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
@@ -15,7 +15,7 @@ if (urlParams.has("speed")) {
   SPEEDSETTER = parseInt(urlParams.get("speed"), 10);
 }
 if (urlParams.has("size")) {
-  sizeFactor = parseInt(urlParams.get("size"), 10);
+  sizeFactor = parseFloat(urlParams.get("size"), 10);
 }
 if (urlParams.has("overlay")) {
   overlay = parseInt(urlParams.get("overlay"), 10);
@@ -78,7 +78,7 @@ ctx.lineCap = "round";
 var cx = w / 2;
 var cy = h / 2;
 var cz = 0;
-var size = (h * sizeFactor) / 4;
+var size = (h * sizeFactor) / 8;
 if (SHAPE == 1) {
   var vertices = [
     new POINT3D(cx - size, cy - size, cz - size),
@@ -135,12 +135,12 @@ if (SHAPE == 1) {
   ];
 } else if (SHAPE == 3) {
   var vertices = [];
-  for (let n = 0; n < 360; n++) {
+  for (let n = 0; n < 1000; n++) {
     vertices.push(
       new POINT3D(
-        Math.cos(n * degtorad),
-        Math.sin(n * degtorad),
-        Math.tan(n * degtorad)
+        Math.sin(phi) * Math.cos(theta),
+        Math.sin(phi) * Math.sin(theta),
+        Math.cos(phi)
       )
     );
   }
