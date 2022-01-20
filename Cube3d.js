@@ -1,3 +1,5 @@
+const degtorad = 360 / Math.PI;
+const radtodeg = 1 / degtorad;
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 let SHAPE = 1;
@@ -131,22 +133,39 @@ if (SHAPE == 1) {
       cz + random() * size
     ),
   ];
+} else if (SHAPE == 3) {
+  var vertices = [];
+  for (let n = 0; n < 360; n++) {
+    vertices.push(
+      new POINT3D(
+        Math.cos(n * degtorad),
+        Math.sin(n * degtorad),
+        Math.tan(n * degtorad)
+      )
+    );
+  }
 }
-var edges = [
-  [0, 1],
-  [1, 2],
-  [2, 3],
-  [3, 0], // back face
-  [4, 5],
-  [5, 6],
-  [6, 7],
-  [7, 4], // front face
-  [0, 4],
-  [1, 5],
-  [2, 6],
-  [3, 7], // connecting sides
-];
-
+if (SHAPE == 2 || SHAPE == 1) {
+  var edges = [
+    [0, 1],
+    [1, 2],
+    [2, 3],
+    [3, 0], // back face
+    [4, 5],
+    [5, 6],
+    [6, 7],
+    [7, 4], // front face
+    [0, 4],
+    [1, 5],
+    [2, 6],
+    [3, 7], // connecting sides
+  ];
+} else if (SHAPE == 3) {
+  var edges = [];
+  for (let m = 1; m < 360; m++) {
+    edges.push([m - 1, m]);
+  }
+}
 // set up the animation loop
 var timeDelta,
   timeLast = 0;
