@@ -1,5 +1,3 @@
-const degtorad = 180 / Math.PI;
-const radtodeg = 1 / degtorad;
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 let SHAPE = 1;
@@ -8,14 +6,17 @@ let sizeFactor = 1;
 let overlay = 0;
 let dots = 0;
 let UseColor = 1;
+let edgeCount=32;
+debugFlag=false;
 if (urlParams.has("shape")) {
   SHAPE = parseInt(urlParams.get("shape"), 10);
+
 }
 if (urlParams.has("speed")) {
   SPEEDSETTER = parseInt(urlParams.get("speed"), 10);
 }
 if (urlParams.has("size")) {
-  sizeFactor = parseFloat(urlParams.get("size"), 10);
+  sizeFactor = parseFloat(urlParams.get("size"));
 }
 if (urlParams.has("overlay")) {
   overlay = parseInt(urlParams.get("overlay"), 10);
@@ -26,12 +27,20 @@ if (urlParams.has("dots")) {
 if (urlParams.has("color")) {
   UseColor = parseInt(urlParams.get("color"), 10);
 }
-console.log(sizeFactor);
-console.log(SPEEDSETTER);
-console.log(SHAPE);
-console.log(overlay);
-console.log(dots);
-console.log(UseColor);
+if (urlParams.has("debug")){
+  debugFlag=(parseInt(urlParams.get("debug"))==1)
+}
+if (urlParams.has("edgecount")&(SHAPE==3)){
+  edgeCount=parseInt(urlParams.get("edgecount"));
+}
+if (debugFlag) {
+  console.log(sizeFactor);
+  console.log(SPEEDSETTER);
+  console.log(SHAPE);
+  console.log(overlay);
+  console.log(dots);
+  console.log(UseColor);
+}
 const random = Math.random;
 const COLOR_BG = "black";
 const COLOR_CUBE = "yellow";
@@ -52,7 +61,7 @@ switch (SPEEDSETTER) {
     var SPEED_Z = 0.1; // rps
     break;
 }
-const POINT3D = function (x, y, z) {
+const POINT3D = function(x, y, z) {
   this.x = x;
   this.y = y;
   this.z = z;
@@ -72,13 +81,13 @@ canvas.width = w;
 ctx.fillStyle = COLOR_BG;
 ctx.strokeStyle = COLOR_CUBE;
 ctx.lineWidth = w / 100;
-ctx.lineCap = "round";
+// ctx.lineCap = "round";
 
 // cube parameters
 var cx = w / 2;
 var cy = h / 2;
 var cz = 0;
-var size = (h * sizeFactor) / 8;
+var size = (h * sizeFactor) / 4;
 if (SHAPE == 1) {
   var vertices = [
     new POINT3D(cx - size, cy - size, cz - size),
@@ -134,7 +143,8 @@ if (SHAPE == 1) {
     ),
   ];
 }
-if (SHAPE == 2 || SHAPE == 1) {
+
+if ((SHAPE == 1)||(SHAPE == 2)) {
   var edges = [
     [0, 1],
     [1, 2],
@@ -149,7 +159,34 @@ if (SHAPE == 2 || SHAPE == 1) {
     [2, 6],
     [3, 7], // connecting sides
   ];
-}
+} else if (SHAPE==3) {
+  var vertices = [];
+  var edges=[];
+  for (var i = 0; i < edgeCount; i++) {
+    var angle = i * (2*Math.PI / edgeCount);
+    vertices.push( new POINT3D(cx,
+                               cy + (size * Math.sin(angle)),
+                               cz + (size * Math.cos(angle))));
+
+    edges.push([i,(i+1)%edgeCount]);
+  }
+  // var vertices = Array.apply(null, Array(18))
+  //   .map(function(x, i) {
+  //     return new POINT3D(0,
+  //                       sin(i * Math.PI / 180 / (360 / i)) * size,
+  //                       cos(i * Math.PI / 180 / (360 / i)) * size));
+  //   });
+  //
+  //
+  // var edges = Array. apply(null, Array(18))
+  // .map(function(x, i)) {
+  //   return [i, (i+1)%18];
+  // });
+  if (debugFlag){
+  console.log(vertices);
+  console.log(edges);
+}};
+
 // set up the animation loop
 var timeDelta,
   timeLast = 0;
